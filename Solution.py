@@ -137,7 +137,7 @@ class Solution:
 						for bay1 in range(self.n_bays):
 							for stack1 in range(self.n_stacks):
 								for tier1 in range(self.n_tiers):
-									alternative_solution = deepcopy(self)
+									alternative_solution = self.copy()
          
 									temp = alternative_solution.flow_x[bay][stack][tier]
 									alternative_solution.flow_x[bay][stack][tier] = alternative_solution.flow_x[bay1][stack1][tier1]
