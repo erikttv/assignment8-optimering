@@ -125,8 +125,11 @@ class Solution:
 	def local_search_two_swap(self, containers):
 		print("Oppgave 2a")
 		improved = False
-		overall_objective = self.calculate_objective(containers)
+
+		i = 0
+
 		while not improved:
+			i += 1
 			best_local_objective = float('inf')
 
 			best_solution = []
@@ -137,25 +140,72 @@ class Solution:
 						for bay1 in range(self.n_bays):
 							for stack1 in range(self.n_stacks):
 								for tier1 in range(self.n_tiers):
-									alternative_solution = self.copy()
-         
-									temp = alternative_solution.flow_x[bay][stack][tier]
-									alternative_solution.flow_x[bay][stack][tier] = alternative_solution.flow_x[bay1][stack1][tier1]
-									alternative_solution.flow_x[bay1][stack1][tier1] = temp
-									value = alternative_solution.calculate_objective(containers)
-									if value < best_local_objective:
-										best_solution = [[bay, stack, tier], [bay1, stack1, tier1]]
-										best_local_objective = value
+									if bay != bay1 or stack != stack1 or tier != tier1:
+										alternative_solution = self.copy()
+										temp = alternative_solution.flow_x[bay][stack][tier]
+										alternative_solution.flow_x[bay][stack][tier] = alternative_solution.flow_x[bay1][stack1][tier1]
+										alternative_solution.flow_x[bay1][stack1][tier1] = temp
+										alternative_solution.calculate_objective(containers)
+										value = alternative_solution.objective
+										if value < best_local_objective:
+											best_solution = [[bay, stack, tier], [bay1, stack1, tier1]]
+											best_local_objective = value
           
-			if best_local_objective < overall_objective:
+			if best_local_objective < self.objective:
 				temp = self.flow_x[best_solution[0][0]][best_solution[0][1]][best_solution[0][2]]
 				self.flow_x[best_solution[0][0]][best_solution[0][1]][best_solution[0][2]] = self.flow_x[best_solution[1][0]][best_solution[1][1]][best_solution[1][2]]
 				self.flow_x[best_solution[1][0]][best_solution[1][1]][best_solution[1][2]] = temp
+				self.calculate_objective(containers)
 			else:
 				improved = True
+			print("Iteration " + str(i))
 
 	def local_search_three_swap(self, containers):
 		print("Oppgave 2b")
+		improved = False
+
+		i = 0
+
+		while not improved:
+			i += 1
+			best_local_objective = float('inf')
+
+			best_solution = []
+
+			for bay in range(self.n_bays):
+				for stack in range(self.n_stacks):
+					for tier in range(self.n_tiers):
+						for bay1 in range(self.n_bays):
+							for stack1 in range(self.n_stacks):
+								for tier1 in range(self.n_tiers):
+									for bay2 in range(self.n_bays):
+										for stack2 in range(self.n_stacks):
+											for tier2 in range(self.n_tiers):
+												
+												alternative_solution = self.copy()
+
+												temp = alternative_solution.flow_x[bay][stack][tier]
+												temp2 = alternative_solution.flow_x[bay1][stack1][tier1]
+												alternative_solution.flow_x[bay][stack][tier] = alternative_solution.flow_x[bay2][stack2][tier2]
+												alternative_solution.flow_x[bay1][stack1][tier1] = temp
+												alternative_solution.flow_x[bay2][stack2][tier2] = temp2
+								
+												alternative_solution.calculate_objective(containers)
+												value = alternative_solution.objective
+												if value < best_local_objective:
+													best_solution = [[bay, stack, tier], [bay1, stack1, tier1], [bay2, stack2, tier2]]
+													best_local_objective = value
+					
+			if best_local_objective < self.objective:
+				temp = self.flow_x[best_solution[0][0]][best_solution[0][1]][best_solution[0][2]]
+				temp2 = self.flow_x[best_solution[1][0]][best_solution[1][1]][best_solution[1][2]]
+				self.flow_x[best_solution[0][0]][best_solution[0][1]][best_solution[0][2]] = self.flow_x[best_solution[2][0]][best_solution[2][1]][best_solution[2][2]]
+				self.flow_x[best_solution[1][0]][best_solution[1][1]][best_solution[1][2]] = temp
+				self.flow_x[best_solution[2][0]][best_solution[2][1]][best_solution[2][2]] = temp2
+				self.calculate_objective(containers)
+			else:
+				improved = True
+			print("Iteration " + str(i))
 
 	def tabu_search_heuristic(self, containers, n_iterations):
 		print("Oppgave 3")
