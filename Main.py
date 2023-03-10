@@ -4,7 +4,8 @@ from Vessel import Vessel
 
 if __name__ == '__main__':
 	# Set data file
-	filename = "instance1.txt"
+	#filename = "instance1.txt"
+	filename = "instance2.txt"
 
 	# Read from data file
 	with open(filename, "r") as datafile:
